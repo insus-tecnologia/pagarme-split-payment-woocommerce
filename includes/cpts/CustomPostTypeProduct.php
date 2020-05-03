@@ -32,10 +32,11 @@ class CustomPostTypeProduct extends CustomPostType
                     ->set_max(1)
                     ->set_width(50),
                     Field::make(
-                        'number',
+                        'text',
                         'psp_percentage',
                         __('Partner percentage')
                     )->set_width(50)
+                    ->set_attribute('type', 'number')
                 ])
             ],
             true
