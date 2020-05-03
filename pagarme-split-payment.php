@@ -15,4 +15,12 @@ defined( 'ABSPATH' ) || exit;
 
 require "vendor/autoload.php";
 
-(new \PagarmeSplitPayment\Cpts\CustomPostTypePartner())->run();
+class PagarmeSplitWooCommerce {
+    public static function run()
+    {
+        \Carbon_Fields\Carbon_Fields::boot();
+        (new \PagarmeSplitPayment\Cpts\CustomPostTypePartner())->run();
+    }
+}
+
+PagarmeSplitWooCommerce::run();
