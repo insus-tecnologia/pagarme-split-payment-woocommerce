@@ -7,12 +7,13 @@ use \Carbon_Fields\Container\Container;
 class CustomPostType {
     public $name, $singularName, $slug, $fields;
 
-    public function __construct($name, $singularName, $slug, $fields = [])
+    public function __construct($name, $singularName, $slug, $fields = [], $external = false)
     {
         $this->name = $name;
         $this->singularName = $singularName;
         $this->slug = $slug;
         $this->fields = $fields;
+        $this->external = $external;
     }
 
     public function create()
@@ -44,7 +45,9 @@ class CustomPostType {
 
     public function run()
     {
-        add_action( 'init', array($this, 'create') );
+        if (!$this->external) {
+            add_action( 'init', array($this, 'create') );
+        }
         add_action( 'carbon_fields_register_fields', array($this, 'addFields') );
     }
 }
