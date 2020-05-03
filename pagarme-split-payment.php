@@ -10,3 +10,9 @@
  *
  * @package PagarmeSplitWooCommerce
  */
+
+defined( 'ABSPATH' ) || exit;
+
+require "vendor/autoload.php";
+
+(new \PagarmeSplitPayment\Cpts\CustomPostTypePartner())->run();
