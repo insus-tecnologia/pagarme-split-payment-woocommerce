@@ -34,9 +34,12 @@ class CustomPostType {
 
     public function addFields()
     {
-        Container::make( 'post_meta', __("{$this->singularName} Data") )
-            ->where( 'post_type', '=', $this->slug )
-            ->add_fields( $this->fields );
+        Container::make( 
+            'post_meta', 
+            __(PLUGIN_NAME . " - {$this->singularName} Data")
+        )
+        ->where( 'post_type', '=', $this->slug )
+        ->add_fields( $this->fields );
     }
 
     public function run()

@@ -5,13 +5,14 @@
  * Version: 1.0.0
  * Author: Raphael Batagini
  * Author URI: https://www.linkedin.com/in/raphael-batagini/
- * Text Domain: pagarme-split-woocommerce
+ * Text Domain: pagarme-split-payment
  * Domain Path: /i18n/languages/
  *
- * @package PagarmeSplitWooCommerce
+ * @package PagarmeSplitPayment
  */
 
 defined( 'ABSPATH' ) || exit;
+define('PLUGIN_NAME', 'Pagar.me Split Payment');
 
 require "vendor/autoload.php";
 
