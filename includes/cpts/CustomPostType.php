@@ -16,7 +16,7 @@ class CustomPostType {
         $this->external = $external;
     }
 
-    public function create()
+    public function register()
     {
         register_post_type( 
             $this->slug,
@@ -43,10 +43,10 @@ class CustomPostType {
         ->add_fields( $this->fields );
     }
 
-    public function run()
+    public function create()
     {
         if (!$this->external) {
-            add_action( 'init', array($this, 'create') );
+            add_action( 'init', array($this, 'register') );
         }
         add_action( 'carbon_fields_register_fields', array($this, 'addFields') );
     }

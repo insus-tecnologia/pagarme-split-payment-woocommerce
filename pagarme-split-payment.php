@@ -20,8 +20,8 @@ class PagarmeSplitWooCommerce {
     public static function run()
     {
         \Carbon_Fields\Carbon_Fields::boot();
-        (new \PagarmeSplitPayment\Cpts\CustomPostTypePartner())->run();
-        (new \PagarmeSplitPayment\Cpts\CustomPostTypeProduct())->run();
+        (new \PagarmeSplitPayment\Cpts\CustomPostTypePartner())->create();
+        (new \PagarmeSplitPayment\Cpts\CustomPostTypeProduct())->create();
     }
 }
 
