@@ -6,8 +6,7 @@ class SplitRules {
     public function split( $data, $order ) {
         $partners = $this->partnersPercentageOverOrder($order);
 
-        var_dump($partners);
-        die('oi');
+        var_dump($partners);die;
         $data['split_rules'] = array(
             array(
                 'recipient_id'          => 'ID_do_primeiro_recebedor',
@@ -26,7 +25,14 @@ class SplitRules {
         return $data;
     }
 
-    // Calculate the percentage that each partner should receive over the order based on the values he should receive over each product
+    /**
+	 * Calculate the percentage that each partner should receive over the order 
+     * based on the values he should receive over each product
+	 *
+	 * @param mixed $order WooCommerce Order object.
+	 * @return array
+	 */
+    // 
     private function partnersPercentageOverOrder($order)
     {
         $items = $order->get_items();
@@ -39,14 +45,19 @@ class SplitRules {
 
             // Sum the total amount to be given to each partner on the order
             foreach ($productPartners as $partner) {
-                $partners[$partner['psp_partner'][0]['id']]['value'] += ($item->get_data()['total'] * ($partner['psp_percentage']/100));
+                $partners[$partner['psp_partner'][0]['id']]['value'] += (
+                    $item->get_data()['total'] * ($partner['psp_percentage']/100)
+                );
             }
         }
 
         $productsTotal = $order->get_subtotal();
 
         foreach($partners as $id => $partner) {
-            $partners[$id]['percentage'] = round(($partner['value'] * 100) / $productsTotal);
+            // Round the value because pagarme doesnt allow float
+            $partners[$id]['percentage'] = round(
+                ($partner['value'] * 100) / $productsTotal
+            );
         }
 
         return $partners;
