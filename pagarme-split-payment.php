@@ -22,7 +22,7 @@ class PagarmeSplitWooCommerce {
         \Carbon_Fields\Carbon_Fields::boot();
         (new \PagarmeSplitPayment\Cpts\CustomPostTypePartner())->create();
         (new \PagarmeSplitPayment\Cpts\CustomPostTypeProduct())->create();
-        \PagarmeSplitPayment\Pagarme\SplitRules::addSplit();
+        (new \PagarmeSplitPayment\Pagarme\SplitRules())->addSplit();
     }
 }
 
