@@ -24,13 +24,15 @@ class CustomPostTypePartner extends CustomPostType {
                     'text', 
                     'psp_bank_code', 
                     __('Bank Code')
-                )->set_attribute('type', 'number'),
+                )->set_attribute('type', 'number')
+                ->set_required(true),
                 Field::make(
                     'text', 
                     'psp_agency', 
                     __('Agency number')
                 )->set_width(50)
-                ->set_attribute('type', 'number'),
+                ->set_attribute('type', 'number')
+                ->set_required(true),
                 Field::make(
                     'text', 
                     'psp_agency_digit', 
@@ -42,13 +44,15 @@ class CustomPostTypePartner extends CustomPostType {
                     'psp_account', 
                     __('Account number')
                 )->set_width(50)
-                ->set_attribute('type', 'number'),
+                ->set_attribute('type', 'number')
+                ->set_required(true),
                 Field::make(
                     'text', 
                     'psp_account_digit', 
                     __('Account digit')
                 )->set_width(50)
-                ->set_attribute('type', 'number'),
+                ->set_attribute('type', 'number')
+                ->set_required(true),
                 Field::make(
                     'select', 
                     'psp_account_type', 
@@ -58,18 +62,21 @@ class CustomPostTypePartner extends CustomPostType {
                     'conta_poupanca' => __('Savings account'), 
                     'conta_corrente_conjunta' => __('Joint current account'), 
                     'conta_poupanca_conjunta' => __('Joint savings account'),
-                ])->set_width(50),
+                ])->set_width(50)
+                ->set_required(true),
                 Field::make(
                     'text', 
                     'psp_document_number', 
                     __('Document number')
                 )->set_width(50)
-                ->set_attribute('type', 'number'),
+                ->set_attribute('type', 'number')
+                ->set_required(true),
                 Field::make(
                     'text', 
                     'psp_legal_name', 
                     __('Legal name')
-                )->set_attribute('maxLength', 30),
+                )->set_attribute('maxLength', 30)
+                ->set_required(true),
             ]
         );
     }
