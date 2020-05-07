@@ -6,21 +6,30 @@ class SplitRules {
     public function split( $data, $order ) {
         $partners = $this->partnersPercentageOverOrder($order);
 
-        var_dump($partners);die;
-        $data['split_rules'] = array(
-            array(
-                'recipient_id'          => 'ID_do_primeiro_recebedor',
-                'percentage'            => '50',
-                'liable'                => true,
-                'charge_processing_fee' => true,
-            ),
-            array(
-                'recipient_id'          => 'ID_do_segundo_recebedor',
-                'percentage'            => '50',
-                'liable'                => true,
-                'charge_processing_fee' => true,
-            ),
-        );
+        if (empty($partners)) {
+            return $data;
+        }
+
+        foreach($partners as $id => $partner) {
+            $partnerData = carbon_get_post_meta($id, 'psp_partner')[0];
+            
+            if (empty($partnerData['psp_recipient_id'])) {
+                continue;
+            }
+
+            $data['split_rules'][] = [
+                'recipient_id' => $partnerData['psp_recipient_id'],
+                'percentage' => $partner['percentage'],
+                'liable' => false,
+                'charge_processing_fee' => false,
+            ];
+        }
+
+        // TODO: Add default recepient data
+        $data['split_rules'] = [
+            'liable' => true,
+            'charge_processing_fee' => true,
+        ];
     
         return $data;
     }
