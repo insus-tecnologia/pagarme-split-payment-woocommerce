@@ -24,6 +24,7 @@ class PagarmeSplitWooCommerce {
         (new \PagarmeSplitPayment\Cpts\CustomPostTypeProduct())->create();
         (new \PagarmeSplitPayment\Pagarme\SplitRules())->addSplit();
         (new \PagarmeSplitPayment\Pagarme\Receivers())->addReceiversCreation();
+        (new \PagarmeSplitPayment\Admin\PluginOptions())->create();
     }
 }
 
