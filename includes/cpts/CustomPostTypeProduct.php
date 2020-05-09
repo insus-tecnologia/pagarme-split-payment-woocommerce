@@ -2,7 +2,7 @@
 
 namespace PagarmeSplitPayment\Cpts;
 
-use \Carbon_Fields\Field\Field;
+use PagarmeSplitPayment\Fields\PartnersPercentageFieldGroup;
 
 class CustomPostTypeProduct extends CustomPostType
 {
@@ -12,33 +12,7 @@ class CustomPostTypeProduct extends CustomPostType
             'Products',
             'Product',
             'product',
-            [
-                Field::make(
-                    'complex', 
-                    'psp_partners', 
-                    __('Partners payment split')
-                )
-                ->add_fields([
-                    Field::make(
-                        'association',
-                        'psp_partner',
-                        __('Partner')
-                    )->set_types([
-                        [
-                            'type' => 'post',
-                            'post_type' => 'partner'
-                        ]
-                    ])->set_min(1)
-                    ->set_max(1)
-                    ->set_width(50),
-                    Field::make(
-                        'text',
-                        'psp_percentage',
-                        __('Partner percentage')
-                    )->set_width(50)
-                    ->set_attribute('type', 'number')
-                ])
-            ],
+            PartnersPercentageFieldGroup::get(),
             true
         );
     }
