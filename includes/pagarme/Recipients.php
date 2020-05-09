@@ -4,7 +4,7 @@ namespace PagarmeSplitPayment\Pagarme;
 
 use PagarmeSplitPayment\Pagarme\ClientSingleton;
 
-class Receivers {
+class Recipients {
     private $partnerData, $client;
 
     public function __construct()
@@ -12,34 +12,20 @@ class Receivers {
         $this->client = ClientSingleton::getInstance();
     }
 
-    public function createOrUpdate( $partnerId )
+    public function createOrUpdate($partnerData)
     {
-        if ('partner' !== get_post_type($partnerId)) {
-            return;
-        }
-
-        $this->partnerData = carbon_get_post_meta(
-            $partnerId, 
-            'psp_partner'
-        )[0];
+        $this->partnerData = $partnerData;
 
         try {
             if ($this->partnerData['psp_recipient_id']) {
-                $this->update();
-                return;
+                return $this->update();
             }
 
-            $recipients = $this->create();
+            return $this->create();
         } catch (\Exception $e) {
             //TODO: Add a log or something like that
             var_dump($e->getMessage());die;
         }
-
-        carbon_set_post_meta(
-            $partnerId, 
-            'psp_partner[0]/psp_recipient_id', 
-            $recipients->id
-        );
     }
 
     private function create()
@@ -82,13 +68,5 @@ class Receivers {
         $formattedPartner['id'] = $this->partnerData['psp_recipient_id'];
 
         return $formattedPartner;
-    }
-
-    public function addReceiversCreation()
-    {
-        add_action(
-            'carbon_fields_post_meta_container_saved',
-            array($this, 'createOrUpdate')
-        );
     }
 }
