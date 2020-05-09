@@ -10,6 +10,7 @@ class PluginOptions {
     public function create()
     {
         Container::make('theme_options', __('Pagar.me Split Payment'))
+            ->set_icon('dashicons-cart')
             ->add_fields(RecipientFieldGroup::get());
     }
 }
