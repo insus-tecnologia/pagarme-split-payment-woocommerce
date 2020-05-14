@@ -4,7 +4,7 @@ namespace PagarmeSplitPayment\Cpts;
 
 use PagarmeSplitPayment\Fields\PartnersPercentageFieldGroup;
 
-class CustomPostTypeProduct extends CustomPostType
+class ProductCustomPostType extends CustomPostType
 {
     public function __construct()
     {
