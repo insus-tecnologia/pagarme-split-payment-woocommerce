@@ -29,8 +29,8 @@ class SplitRules {
             $data['split_rules'][] = [
                 'recipient_id' => $partnerData['psp_recipient_id'],
                 'percentage' => $partner['percentage'],
-                'liable' => false,
-                'charge_processing_fee' => false,
+                'liable' => true,
+                'charge_processing_fee' => true,
             ];
         }
 
