@@ -17,7 +17,7 @@ class SplitRules {
 
         $partnersPercentage = 0;
         foreach($partners as $id => $partner) {
-            $partnerData = carbon_get_post_meta($id, 'psp_partner')[0];
+            $partnerData = carbon_get_user_meta($id, 'psp_partner')[0];
             
             if (empty($partnerData['psp_recipient_id'])) {
                 continue;
@@ -69,7 +69,7 @@ class SplitRules {
 
             // Sum the total amount to be given to each partner on the order
             foreach ($productPartners as $partner) {
-                $partners[$partner['psp_partner'][0]['id']]['value'] += (
+                $partners[$partner['psp_partner_user'][0]['id']]['value'] += (
                     $item->get_data()['total'] * ($partner['psp_percentage']/100)
                 );
             }

@@ -18,12 +18,11 @@ class PartnersPercentageFieldGroup implements FieldGroup
             ->add_fields([
                 Field::make(
                     'association',
-                    'psp_partner',
+                    'psp_partner_user',
                     __('Partner')
                 )->set_types([
                     [
-                        'type' => 'post',
-                        'post_type' => 'partner'
+                        'type' => 'user',
                     ]
                 ])->set_min(1)
                 ->set_max(1)
