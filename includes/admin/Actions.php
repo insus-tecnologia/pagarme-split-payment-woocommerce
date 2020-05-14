@@ -8,7 +8,7 @@ class Actions {
     public function createRecipients()
     {
         add_action(
-            'carbon_fields_post_meta_container_saved',
+            'carbon_fields_user_meta_container_saved',
             array($this, 'createPartnerRecipient')
         );
 
@@ -35,11 +35,13 @@ class Actions {
 
     public function createPartnerRecipient( $partnerId )
     {
-        if ('partner' !== get_post_type($partnerId)) {
+        $user = get_userdata($partnerId);
+        
+        if (!in_array('partner', $user->roles)) {
             return;
         }
 
-        $partnerData = carbon_get_post_meta(
+        $partnerData = carbon_get_user_meta(
             $partnerId, 
             'psp_partner'
         )[0];
@@ -47,7 +49,7 @@ class Actions {
         $recipientService = new Recipients();
         $recipient = $recipientService->createOrUpdate($partnerData);
 
-        carbon_set_post_meta(
+        carbon_set_user_meta(
             $partnerId, 
             'psp_partner[0]/psp_recipient_id', 
             $recipient->id

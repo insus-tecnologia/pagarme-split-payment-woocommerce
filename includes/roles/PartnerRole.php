@@ -10,7 +10,9 @@ class PartnerRole extends Role {
         parent::__construct(
             'partner',
             'Partner',
-            [],
+            [
+                'read' => true
+            ],
             RecipientFieldGroup::get()
         );
     }
