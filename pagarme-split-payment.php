@@ -20,11 +20,20 @@ class PagarmeSplitWooCommerce {
     public static function run()
     {
         \Carbon_Fields\Carbon_Fields::boot();
+
+        // CPTs
         (new \PagarmeSplitPayment\Cpts\CustomPostTypePartner())->create();
         (new \PagarmeSplitPayment\Cpts\CustomPostTypeProduct())->create();
+
+        // Business rules
         (new \PagarmeSplitPayment\Pagarme\SplitRules())->addSplit();
+
+        // Admin
         (new \PagarmeSplitPayment\Admin\Actions())->createRecipients();
         (new \PagarmeSplitPayment\Admin\PluginOptions())->create();
+
+        // Roles
+        (new \PagarmeSplitPayment\Roles\PartnerRole())->create();
     }
 }
 
