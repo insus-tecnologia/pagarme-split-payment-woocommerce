@@ -22,7 +22,6 @@ class PagarmeSplitWooCommerce {
         \Carbon_Fields\Carbon_Fields::boot();
 
         // CPTs
-        (new \PagarmeSplitPayment\Cpts\CustomPostTypePartner())->create();
         (new \PagarmeSplitPayment\Cpts\CustomPostTypeProduct())->create();
 
         // Business rules
