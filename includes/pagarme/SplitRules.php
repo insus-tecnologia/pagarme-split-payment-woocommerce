@@ -45,6 +45,8 @@ class SplitRules {
             'liable' => true,
             'charge_processing_fee' => true,
         ];
+
+        $this->log($order);
     
         return $data;
     }
@@ -85,6 +87,31 @@ class SplitRules {
         }
 
         return $partners;
+    }
+
+    private function log($order)
+    {
+        $items = $order->get_items();
+        $partners = [];
+        foreach ( $items as $item ) {
+            $productId = $item->get_product_id();
+            $productPartners = carbon_get_post_meta(
+                $productId,
+                'psp_partners'
+            );
+
+            // Sum the total amount to be given to each partner on the order
+            foreach ($productPartners as $partner) {
+                $partners[] = [
+                    'user_id' => $partner['psp_partner_user'][0]['id'],
+                    'product_id' => $productId,
+                    'amount' => $item->get_data()['total'] * ($partner['psp_percentage']/100),
+                    'percentage' => $partner['psp_percentage'],
+                ];
+            }
+        }
+
+        update_post_meta($order->get_ID(), 'psp_order_split', $partners);
     }
 
     public function addSplit()
