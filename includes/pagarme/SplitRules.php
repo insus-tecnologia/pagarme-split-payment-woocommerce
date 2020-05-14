@@ -105,6 +105,7 @@ class SplitRules {
                 $partners[] = [
                     'user_id' => $partner['psp_partner_user'][0]['id'],
                     'product_id' => $productId,
+                    'quantity' => $item->get_quantity(),
                     'amount' => $item->get_data()['total'] * ($partner['psp_percentage']/100),
                     'percentage' => $partner['psp_percentage'],
                 ];

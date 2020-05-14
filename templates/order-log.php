@@ -10,7 +10,7 @@
             <?php $user = get_userdata($log['user_id']); ?>
             <tr>
                 <td><?= $user->display_name ?></td>
-                <td><?= get_the_title($log['product_id']) ?></td>
+                <td><?= get_the_title($log['product_id']) . "(x{$log['quantity']})" ?></td>
                 <td><?= wc_price($log['amount']) ?></td>
                 <td><?= $log['percentage'] ?>%</td>
             </tr>
