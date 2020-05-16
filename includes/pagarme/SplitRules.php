@@ -91,8 +91,14 @@ class SplitRules {
 
     private function log($order)
     {
+        // Remove all partners related to order to be sure this info will be updated
+        delete_post_meta($order->get_ID(), 'psp_order_partner');
+
         $items = $order->get_items();
         $partners = [];
+
+        $partners_ids = [];
+
         foreach ( $items as $item ) {
             $productId = $item->get_product_id();
             $productPartners = carbon_get_post_meta(
@@ -100,7 +106,7 @@ class SplitRules {
                 'psp_partners'
             );
 
-            // Sum the total amount to be given to each partner on the order
+            // Get data for all partners related to this order
             foreach ($productPartners as $partner) {
                 $partners[] = [
                     'user_id' => $partner['psp_partner_user'][0]['id'],
@@ -109,7 +115,17 @@ class SplitRules {
                     'amount' => $item->get_data()['total'] * ($partner['psp_percentage']/100),
                     'percentage' => $partner['psp_percentage'],
                 ];
+
+                // Register the different partners at this order
+                if (!in_array($partner['psp_partner_user'][0]['id'], $partners_ids)) {
+                    $partners_ids[] = $partner['psp_partner_user'][0]['id'];
+                }
             }
+        }
+
+        // Turn order queriable by partner id
+        foreach($partners_ids as $partner_id) {
+            add_post_meta($order->get_ID(), 'psp_partner_id', $partner_id);
         }
 
         update_post_meta($order->get_ID(), 'psp_order_split', $partners);
