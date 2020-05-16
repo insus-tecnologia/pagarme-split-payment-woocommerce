@@ -11,9 +11,12 @@ class PartnerRole extends Role {
             'partner',
             'Partner',
             [
-                'read' => true
+                'read' => true,
+                'psp_my_share' => true,
             ],
-            RecipientFieldGroup::get()
+            RecipientFieldGroup::get(),
+            false,
+            true
         );
     }
 }
