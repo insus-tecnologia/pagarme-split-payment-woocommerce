@@ -4,7 +4,6 @@ namespace PagarmeSplitPayment\Admin;
 
 use Carbon_Fields\Container;
 use PagarmeSplitPayment\Fields\RecipientFieldGroup;
-use WP_Query;
 
 class PluginOptions {
 
@@ -16,12 +15,6 @@ class PluginOptions {
         )->set_page_file('psp-plugin-options')
         ->set_icon('dashicons-cart')
         ->add_fields(RecipientFieldGroup::get());
-
-        Container::make(
-            'theme_options',
-            __('My Share')
-        )->set_page_file('psp-my-share')
-        ->set_page_parent($plugin_options);
 
         self::loadMenus();
     }
@@ -36,13 +29,13 @@ class PluginOptions {
 
     public static function addMySharePage()
     {
-        add_submenu_page(
-            'psp-my-share',
+        add_menu_page(
             __('My Share'),
             __('My Share'),
-            'manage_options',
+            'psp_my_share',
             'psp-my-share',
-            array(__CLASS__, 'getMyShareContent')
+            array(__CLASS__, 'getMyShareContent'),
+            'dashicons-chart-bar'
         );
     }
 
