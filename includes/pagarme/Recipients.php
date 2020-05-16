@@ -37,9 +37,15 @@ class Recipients {
 
     private function update()
     {
-        return $this->client->recipients()->update(
-            $this->getPartnerDataFormatted(true)
-        );
+        try {
+            return $this->client->recipients()->update(
+                $this->getPartnerDataFormatted(true)
+            );
+        } catch (\Exception $e) {
+            // Update may fail if Pagar.me account change and recipient doesnt exists
+            // In this case, create another one
+            return $this->create();
+        }
     }
 
     private function getPartnerDataFormatted($update = false)
