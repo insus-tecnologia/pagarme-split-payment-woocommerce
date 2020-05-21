@@ -75,7 +75,7 @@ class RecipientFieldGroup implements FieldGroup
                         'text',
                         'psp_legal_name',
                         __('Legal name')
-                    )->set_attribute('maxLength', 60)
+                    )->set_attribute('maxLength', 30)
                         ->set_required(true),
                 ])->set_min(1)
                 ->set_max(1)
