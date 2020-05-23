@@ -44,7 +44,13 @@ class Actions {
         $partnerData = carbon_get_user_meta(
             $partnerId, 
             'psp_partner'
-        )[0];
+        );
+
+        if (empty($partnerData)) {
+            return;
+        }
+
+        $partnerData = array_shift($partnerData);
 
         $recipientService = new Recipients();
         $recipient = $recipientService->createOrUpdate($partnerData);
