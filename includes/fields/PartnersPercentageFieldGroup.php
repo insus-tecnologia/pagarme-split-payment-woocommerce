@@ -9,7 +9,7 @@ class PartnersPercentageFieldGroup implements FieldGroup
 {
     public static function get()
     {
-        return [
+        $fields = [
             Field::make(
                 'complex', 
                 'psp_partners', 
@@ -35,5 +35,22 @@ class PartnersPercentageFieldGroup implements FieldGroup
                 ->set_attribute('type', 'number')
             ])
         ];
+
+        self::list_only_partners();
+
+        return $fields;
+    }
+
+    public static function list_only_partners()
+    {
+        add_filter(
+            'carbon_fields_association_field_options_psp_partner_user_user',
+            array(__CLASS__, 'apply_partners_filter')
+        );
+    }
+    
+    public static function apply_partners_filter($options){
+        $options['role'] = 'partner';
+        return $options;
     }
 }
