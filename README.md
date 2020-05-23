@@ -9,3 +9,6 @@ Allow to define partners to split payment with using Pagar.me payment gateway
 ## Install
 - Send the plugin files to wp-content/plugins folder or install using the plugins installer from WordPress
 - Activate the plugin
+
+## Changelog
+Changelog can be found [here](CHANGELOG.md)
