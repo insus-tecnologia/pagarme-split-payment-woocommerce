@@ -71,15 +71,15 @@ class Role {
 
         add_filter(
             'woocommerce_prevent_admin_access',
-            array($this, 'allow_admin_access')
+            array($this, 'prevent_admin_access')
         );
         add_filter(
             'woocommerce_disable_admin_bar',
-            array($this, 'allow_admin_access')
+            array($this, 'prevent_admin_access')
         );
     }
 
-    public function allow_admin_access()
+    public function prevent_admin_access()
     {
         if( !is_user_logged_in() ) {
             return true;
