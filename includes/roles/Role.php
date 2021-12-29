@@ -27,12 +27,15 @@ class Role {
     {
         $currentRole = get_role($this->role);
 
-        $intersect = array_intersect_assoc($currentRole->capabilities, $this->capabilities);
+        $intersect = array_intersect_assoc(
+            $currentRole->capabilities,
+            $this->capabilities
+        );
 
         if (
             $currentRole && // Role exists
             (
-                count($intersect) !== count($currentRole->capabilities) || 
+                count($intersect) !== count($currentRole->capabilities) ||
                 count($intersect) !== count($this->capabilities)
             ) // Capabilities outdated
         ) {
@@ -42,7 +45,7 @@ class Role {
         // If admin doesnt have some custom caps, add it to him
         $admin_role = get_role('administrator');
         $admin_missing_capabilities = array_diff_assoc(
-            $this->capabilities, 
+            $this->capabilities,
             $admin_role->capabilities
         );
 
