@@ -13,7 +13,7 @@ class Role {
         $capabilities = [], 
         $fields = [], 
         $external = false,
-        $allow_admin = false
+        $allow_admin = true
     ) {
         $this->role = $role;
         $this->displayName = $displayName;
@@ -86,13 +86,10 @@ class Role {
         }
 
         $user = wp_get_current_user();
-        if (
-            current_user_can('administrator') || 
-            ($this->allow_admin && in_array($this->role, $user->roles))
-        ) {
-            return false;
+        if (in_array($this->role, $user->roles) && !$this->allow_admin) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 }
