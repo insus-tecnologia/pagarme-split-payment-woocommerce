@@ -14,7 +14,7 @@
 defined( 'ABSPATH' ) || exit;
 define('PLUGIN_NAME', 'Pagar.me Split Payment');
 
-require "vendor/autoload.php";
+require_once(__DIR__ . '/vendor/autoload.php');
 
 class PagarmeSplitWooCommerce {
     public static function run()

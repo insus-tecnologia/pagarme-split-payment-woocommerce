@@ -13,7 +13,7 @@ class Role {
         $capabilities = [], 
         $fields = [], 
         $external = false,
-        $allow_admin = false
+        $allow_admin = true
     ) {
         $this->role = $role;
         $this->displayName = $displayName;
@@ -27,12 +27,15 @@ class Role {
     {
         $currentRole = get_role($this->role);
 
-        $intersect = array_intersect_assoc($currentRole->capabilities, $this->capabilities);
+        $intersect = array_intersect_assoc(
+            $currentRole->capabilities,
+            $this->capabilities
+        );
 
         if (
             $currentRole && // Role exists
             (
-                count($intersect) !== count($currentRole->capabilities) || 
+                count($intersect) !== count($currentRole->capabilities) ||
                 count($intersect) !== count($this->capabilities)
             ) // Capabilities outdated
         ) {
@@ -42,7 +45,7 @@ class Role {
         // If admin doesnt have some custom caps, add it to him
         $admin_role = get_role('administrator');
         $admin_missing_capabilities = array_diff_assoc(
-            $this->capabilities, 
+            $this->capabilities,
             $admin_role->capabilities
         );
 
@@ -71,28 +74,25 @@ class Role {
 
         add_filter(
             'woocommerce_prevent_admin_access',
-            array($this, 'allow_admin_access')
+            array($this, 'prevent_admin_access')
         );
         add_filter(
             'woocommerce_disable_admin_bar',
-            array($this, 'allow_admin_access')
+            array($this, 'prevent_admin_access')
         );
     }
 
-    public function allow_admin_access()
+    public function prevent_admin_access()
     {
         if( !is_user_logged_in() ) {
             return true;
         }
 
         $user = wp_get_current_user();
-        if (
-            current_user_can('administrator') || 
-            ($this->allow_admin && in_array($this->role, $user->roles))
-        ) {
-            return false;
+        if (in_array($this->role, $user->roles) && !$this->allow_admin) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 }
