@@ -14,4 +14,4 @@
 - TODO: Describe all functionalities
 
 ## Changelog
-Changelog can be found [here](CHANGELOG.md)
+Changelog can be found [here](https://github.com/insus-tecnologia/pagarme-split-payment-woocommerce/CHANGELOG.md)
