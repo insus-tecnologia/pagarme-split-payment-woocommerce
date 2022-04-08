@@ -1,3 +1,5 @@
+# Pagar.me Split Payment for WooCommerce
+
 ## Requirements
 - [Woocommerce](https://github.com/woocommerce/woocommerce)
 - [WooCommerce Pagar.me](https://github.com/claudiosanches/woocommerce-pagarme) up and running
