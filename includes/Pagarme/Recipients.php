@@ -23,7 +23,7 @@ class Recipients {
 
             return $this->create();
         } catch (\Exception $e) {
-            //TODO: Add a log or something like that
+            //TODO: Add a log or something like that.. one day.
             var_dump($e->getMessage());die;
         }
     }
