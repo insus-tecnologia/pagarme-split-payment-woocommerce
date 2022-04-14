@@ -2,7 +2,7 @@
 
 namespace PagarmeSplitPayment\Pagarme;
 
-use WC_Order_Item;
+use PagarmeSplitPayment\Helper;
 
 class SplitRules {
     public function split( $data, $order ) {
@@ -17,7 +17,8 @@ class SplitRules {
             return $data;
         }
 
-        $partnersPercentage = 0;
+        $partnersAmount = 0;
+
         foreach($partners as $id => $partner) {
             $partnerData = carbon_get_user_meta($id, 'psp_partner')[0];
             
@@ -25,25 +26,25 @@ class SplitRules {
                 continue;
             }
 
-            // Count the percentage splited to partners
-            $partnersPercentage += $partner['percentage'];
+            $partnerAmount = Helper::partnerAmount($partner['percentage'], $order->get_total());
+            $partnersAmount += $partnerAmount;
 
             $data['split_rules'][] = [
                 'recipient_id' => $partnerData['psp_recipient_id'],
-                'percentage' => $partner['percentage'],
+                'amount' => $partnerAmount,
                 'liable' => true,
                 'charge_processing_fee' => true,
             ];
         }
 
         // If there is no percentage to split return original data
-        if (!$partnersPercentage) {
+        if (!$partnersAmount) {
             return $data;
         }
 
         $data['split_rules'][] = [
             'recipient_id' => $mainRecipientData[0]['psp_recipient_id'],
-            'percentage' => 100 - $partnersPercentage,
+            'amount' => Helper::priceInCents($order->get_total()) - $partnersAmount,
             'liable' => true,
             'charge_processing_fee' => true,
         ];
@@ -84,9 +85,7 @@ class SplitRules {
 
         foreach($partners as $id => $partner) {
             // Round the value because pagarme doesnt allow float
-            $partners[$id]['percentage'] = round(
-                ($partner['value'] * 100) / $productsTotal
-            );
+            $partners[$id]['percentage'] = $partner['value'] / $productsTotal;
         }
 
         return $partners;
