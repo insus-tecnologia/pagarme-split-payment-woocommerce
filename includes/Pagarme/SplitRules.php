@@ -6,7 +6,7 @@ use PagarmeSplitPayment\Helper;
 
 class SplitRules {
     public function split( $data, $order ) {
-        $partners = $this->partnersPercentageOverOrder($order);
+        $partners = $this->partnersAmountOverOrder($order);
         $mainRecipientData = carbon_get_theme_option('psp_partner');
 
         if (
@@ -26,12 +26,11 @@ class SplitRules {
                 continue;
             }
 
-            $partnerAmount = Helper::partnerAmount($partner['percentage'], $order->get_total());
-            $partnersAmount += $partnerAmount;
+            $partnersAmount += Helper::priceInCents($partner['value']);
 
             $data['split_rules'][] = [
                 'recipient_id' => $partnerData['psp_recipient_id'],
-                'amount' => $partnerAmount,
+                'amount' => Helper::priceInCents($partner['value']),
                 'liable' => true,
                 'charge_processing_fee' => true,
             ];
@@ -55,14 +54,13 @@ class SplitRules {
     }
 
     /**
-	 * Calculate the percentage that each partner should receive over the order 
-     * based on the values he should receive over each product
-	 *
+	 * Calculate the amount that each partner should receive over the order
+     *
 	 * @param mixed $order WooCommerce Order object.
 	 * @return array
 	 */
     // 
-    private function partnersPercentageOverOrder(\WC_Order $order)
+    private function partnersAmountOverOrder(\WC_Order $order)
     {
         $items = $order->get_items();
         $partners = [];
@@ -75,17 +73,11 @@ class SplitRules {
 
             // Sum the total amount to be given to each partner on the order
             foreach ($productPartners as $partner) {
-                $partners[$partner['psp_partner_user'][0]['id']]['value'] += (
-                    $item->get_data()['total'] * ($partner['psp_percentage']/100)
+                $partners[$partner['psp_partner_user'][0]['id']]['value'] += round(
+                    $item->get_data()['total'] * ($partner['psp_percentage']/100),
+                    2
                 );
             }
-        }
-
-        $productsTotal = $order->get_total();
-
-        foreach($partners as $id => $partner) {
-            // Round the value because pagarme doesnt allow float
-            $partners[$id]['percentage'] = $partner['value'] / $productsTotal;
         }
 
         return $partners;
