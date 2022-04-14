@@ -9,6 +9,8 @@ class PartnersPercentageFieldGroup implements FieldGroup
 {
     public static function get()
     {
+        $comission_type_logic = [ 'field' => 'psp_comission_type', 'compare' => '=', 'value' => '' ];
+
         $fields = [
             Field::make(
                 'complex', 
@@ -25,14 +27,25 @@ class PartnersPercentageFieldGroup implements FieldGroup
                         'type' => 'user',
                     ]
                 ])->set_min(1)
-                ->set_max(1)
-                ->set_width(50),
-                Field::make(
-                    'text',
-                    'psp_percentage',
-                    __('Partner percentage')
-                )->set_width(50)
-                ->set_attribute('type', 'number')
+                ->set_max(1),
+                Field::make('radio', 'psp_comission_type', __('Comission Type', 'pagarme-split-payment'))
+                    ->set_options([
+                        'percentage' => __('Percentage', 'pagarme-split-payment'),
+                        'fixed_amount' => __('Fixed Amount', 'pagarme-split-payment'),
+                    ])
+                    ->set_width(50),
+                Field::make('text', 'psp_percentage', __('Partner Percentage', 'pagarme-split-payment'))
+                    ->set_width(50)
+                    ->set_attribute('type', 'number')
+                    ->set_conditional_logic([
+                        array_merge($comission_type_logic, ['value' => 'percentage'])
+                    ]),
+                Field::make('text', 'psp_partner_amount', __('Partner Amount', 'pagarme-split-payment'))
+                    ->set_width(50)
+                    ->set_attribute('type', 'number')
+                    ->set_conditional_logic([
+                        array_merge($comission_type_logic, ['value' => 'fixed_amount'])
+                    ]),
             ])
         ];
 
