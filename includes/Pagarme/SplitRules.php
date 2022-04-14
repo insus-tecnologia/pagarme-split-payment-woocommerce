@@ -2,6 +2,8 @@
 
 namespace PagarmeSplitPayment\Pagarme;
 
+use WC_Order_Item;
+
 class SplitRules {
     public function split( $data, $order ) {
         $partners = $this->partnersPercentageOverOrder($order);
@@ -47,7 +49,7 @@ class SplitRules {
         ];
 
         $this->log($order);
-    
+
         return $data;
     }
 
@@ -59,10 +61,11 @@ class SplitRules {
 	 * @return array
 	 */
     // 
-    private function partnersPercentageOverOrder($order)
+    private function partnersPercentageOverOrder(\WC_Order $order)
     {
         $items = $order->get_items();
         $partners = [];
+
         foreach ( $items as $item ) {
             $productPartners = carbon_get_post_meta(
                 $item->get_product_id(), 
@@ -77,7 +80,7 @@ class SplitRules {
             }
         }
 
-        $productsTotal = $order->get_subtotal();
+        $productsTotal = $order->get_total();
 
         foreach($partners as $id => $partner) {
             // Round the value because pagarme doesnt allow float
