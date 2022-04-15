@@ -39,10 +39,10 @@ class Partner
     {
         $percentage = (float) $partnerData['psp_percentage'];
         $price = 0;
-    
+
         if (is_a($item, WC_Order_Item::class)) {
             $price = (float) $item->get_data()['total'];
-        } else if(is_a($item, WC_Product::class)) {
+        } else if (is_a($item, WC_Product::class)) {
             $price = (float) $item->get_data()['price'];
         }
 
@@ -51,16 +51,14 @@ class Partner
 
     protected function getFixedAmount(WC_Data $item, array $partnerData): float
     {
-        $price = 0;
-    
-        if (is_a($item, WC_Order_Item::class)) {
-            $price = (float) $item->get_data()['total'];
-        } else if(is_a($item, WC_Product::class)) {
-            $price = (float) $item->get_data()['price'];
-        }
-
         $comission = (float) $partnerData['psp_fixed_amount'];
 
-        return Helper::priceInCents($comission) > Helper::priceInCents($price) ? $price : $comission;
+        if (is_a($item, WC_Order_Item::class)) {
+            $price = (float) $item->get_data()['total'];
+
+            return Helper::priceInCents($comission) > Helper::priceInCents($price) ? $price : $comission;
+        }
+
+        return $comission;
     }
 }
