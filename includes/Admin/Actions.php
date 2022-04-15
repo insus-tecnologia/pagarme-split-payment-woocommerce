@@ -16,6 +16,15 @@ class Actions {
             'carbon_fields_theme_options_container_saved',
             array($this, 'createMainRecipient')
         );
+
+        return $this;
+    }
+    
+    public function createAdminNotices()
+    {
+        add_action('admin_notices', [$this, 'showComissionErrors']);
+
+        return $this;
     }
 
     public function createMainRecipient()
@@ -60,5 +69,20 @@ class Actions {
             'psp_partner[0]/psp_recipient_id', 
             $recipient->id
         );
+    }
+
+    public function showComissionErrors()
+    {
+        global $post;
+
+        if (!$error = get_transient('psp_comission_error_' . $post->ID)) {
+            return;
+        }
+
+        ?>
+        <div class="notice notice-error">
+            <p><?php echo $error; ?></p>
+        </div>
+        <?php
     }
 }
