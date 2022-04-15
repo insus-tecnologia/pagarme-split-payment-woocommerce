@@ -40,7 +40,7 @@ class PartnersPercentageFieldGroup implements FieldGroup
                     ->set_conditional_logic([
                         array_merge($comission_type_logic, ['value' => 'percentage'])
                     ]),
-                Field::make('text', 'psp_partner_amount', __('Partner Amount', 'pagarme-split-payment'))
+                Field::make('text', 'psp_fixed_amount', __('Partner Amount', 'pagarme-split-payment'))
                     ->set_width(50)
                     ->set_attribute('type', 'number')
                     ->set_conditional_logic([
