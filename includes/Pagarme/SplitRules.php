@@ -2,6 +2,7 @@
 
 namespace PagarmeSplitPayment\Pagarme;
 
+use PagarmeSplitPayment\Entities\Partner;
 use PagarmeSplitPayment\Helper;
 
 class SplitRules {
@@ -73,10 +74,9 @@ class SplitRules {
 
             // Sum the total amount to be given to each partner on the order
             foreach ($productPartners as $partner) {
-                $partners[$partner['psp_partner_user'][0]['id']]['value'] += round(
-                    $item->get_data()['total'] * ($partner['psp_percentage']/100),
-                    2
-                );
+                $partner = new Partner($partner);
+
+                $partners[$partner->getID()]['value'] += $partner->calculateValue($item);
             }
         }
 
