@@ -5,7 +5,7 @@ namespace PagarmeSplitPayment\Fields;
 use PagarmeSplitPayment\Fields\FieldGroup;
 use \Carbon_Fields\Field\Field;
 
-class PartnersPercentageFieldGroup implements FieldGroup
+class PartnersFieldGroup implements FieldGroup
 {
     public static function get()
     {

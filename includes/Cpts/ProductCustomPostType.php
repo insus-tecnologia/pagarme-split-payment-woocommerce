@@ -2,7 +2,7 @@
 
 namespace PagarmeSplitPayment\Cpts;
 
-use PagarmeSplitPayment\Fields\PartnersPercentageFieldGroup;
+use PagarmeSplitPayment\Fields\PartnersFieldGroup;
 
 class ProductCustomPostType extends CustomPostType
 {
@@ -12,7 +12,7 @@ class ProductCustomPostType extends CustomPostType
             'Products',
             'Product',
             'product',
-            PartnersPercentageFieldGroup::get(),
+            PartnersFieldGroup::get(),
             true
         );
     }
