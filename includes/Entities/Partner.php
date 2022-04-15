@@ -3,7 +3,9 @@
 namespace PagarmeSplitPayment\Entities;
 
 use PagarmeSplitPayment\Helper;
+use WC_Data;
 use WC_Order_Item;
+use WC_Product;
 
 class Partner
 {
@@ -12,7 +14,7 @@ class Partner
         $this->partnerData = $partnerData;
     }
 
-    public function calculateValue(WC_Order_Item $item): float
+    public function calculateValue(WC_Data $item): float
     {
         $value = [
             'percentage' => $this->getPercentageAmount($item, $this->partnerData),
@@ -33,18 +35,32 @@ class Partner
         return $this->partnerData['psp_partner_user'][0]['id'];
     }
 
-    protected function getPercentageAmount(WC_Order_Item $item, array $partnerData): float
+    protected function getPercentageAmount(WC_Data $item, array $partnerData): float
     {
         $percentage = (float) $partnerData['psp_percentage'];
+        $price = 0;
+    
+        if (is_a($item, WC_Order_Item::class)) {
+            $price = (float) $item->get_data()['total'];
+        } else if(is_a($item, WC_Product::class)) {
+            $price = (float) $item->get_data()['price'];
+        }
 
-        return round($item->get_data()['total'] * ($percentage / 100), 2);
+        return round($price * ($percentage / 100), 2);
     }
 
-    protected function getFixedAmount(WC_Order_Item $item, array $partnerData): float
+    protected function getFixedAmount(WC_Data $item, array $partnerData): float
     {
-        $comission = Helper::priceInCents((float) $partnerData['psp_fixed_amount']);
-        $productPrice = Helper::priceInCents((float) $item->get_data()['total']);
+        $price = 0;
+    
+        if (is_a($item, WC_Order_Item::class)) {
+            $price = (float) $item->get_data()['total'];
+        } else if(is_a($item, WC_Product::class)) {
+            $price = (float) $item->get_data()['price'];
+        }
 
-        return $comission > $productPrice ? (float) $item->get_data()['total'] : (float) $partnerData['psp_fixed_amount'];
+        $comission = (float) $partnerData['psp_fixed_amount'];
+
+        return Helper::priceInCents($comission) > Helper::priceInCents($price) ? $price : $comission;
     }
 }
