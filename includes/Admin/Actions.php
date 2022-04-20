@@ -73,9 +73,9 @@ class Actions {
 
     public function showComissionErrors()
     {
-        global $post;
+        global $post, $pagenow;
 
-        if (!$error = get_transient('psp_comission_error_' . $post->ID)) {
+        if ((!$error = get_transient('psp_comission_error_' . $post->ID)) || 'post.php' !== $pagenow) {
             return;
         }
 
