@@ -51,7 +51,7 @@ class Partner
 
     protected function getFixedAmount(WC_Data $item, array $partnerData): float
     {
-        $comission = (float) $partnerData['psp_fixed_amount'];
+        $comission = (float) str_replace(wc_get_price_decimal_separator(), '.', $partnerData['psp_fixed_amount']);
 
         if (is_a($item, WC_Order_Item::class)) {
             $price = (float) $item->get_data()['total'];
