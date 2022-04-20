@@ -38,7 +38,7 @@ class ProductCustomPostType extends CustomPostType
         }, 0);
 
         if (Helper::priceInCents($totalPartnersComission) > Helper::priceInCents((float) $product->get_price())) {
-            set_transient('psp_comission_error_' . $postID, __('Partners comissions has a bigger value than product price.', 'pagarme-split-payment'), YEAR_IN_SECONDS);
+            set_transient('psp_comission_error_' . $postID, __('Partners comissions has value greater than product price.', 'pagarme-split-payment'), YEAR_IN_SECONDS);
             return;
         }
 
