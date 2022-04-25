@@ -12,41 +12,30 @@ class PartnersFieldGroup implements FieldGroup
         $comission_type_logic = [ 'field' => 'psp_comission_type', 'compare' => '=', 'value' => '' ];
 
         $fields = [
-            Field::make(
-                'complex', 
-                'psp_partners', 
-                __('Partners payment split')
-            )
+            Field::make('radio', 'psp_comission_type', __('Comission Type', 'pagarme-split-payment'))
+                ->set_options([
+                    'percentage' => __('Percentage', 'pagarme-split-payment'),
+                    'fixed_amount' => __('Fixed Amount', 'pagarme-split-payment'),
+                ]),
+            self::user_association_field()
+                ->set_conditional_logic([
+                    array_merge($comission_type_logic, ['value' => 'fixed_amount'])
+                ]),
+            Field::make('text', 'psp_fixed_amount', __('Partner Amount', 'pagarme-split-payment'))
+                ->set_width(50)
+                ->set_help_text(sprintf( __( 'Please enter with one monetary decimal point (%s) without thousand separators and currency symbols.', 'woocommerce' ), wc_get_price_decimal_separator() ))
+                ->set_conditional_logic([
+                    array_merge($comission_type_logic, ['value' => 'fixed_amount'])
+                ]),
+            Field::make('complex', 'psp_partners', __('Partners payment split'))
             ->add_fields([
-                Field::make(
-                    'association',
-                    'psp_partner_user',
-                    __('Partner')
-                )->set_types([
-                    [
-                        'type' => 'user',
-                    ]
-                ])->set_min(1)
-                ->set_max(1),
-                Field::make('radio', 'psp_comission_type', __('Comission Type', 'pagarme-split-payment'))
-                    ->set_options([
-                        'percentage' => __('Percentage', 'pagarme-split-payment'),
-                        'fixed_amount' => __('Fixed Amount', 'pagarme-split-payment'),
-                    ])
-                    ->set_width(50),
+                self::user_association_field(),
                 Field::make('text', 'psp_percentage', __('Partner Percentage', 'pagarme-split-payment'))
                     ->set_width(50)
                     ->set_attribute('type', 'number')
-                    ->set_conditional_logic([
-                        array_merge($comission_type_logic, ['value' => 'percentage'])
-                    ]),
-                Field::make('text', 'psp_fixed_amount', __('Partner Amount', 'pagarme-split-payment'))
-                    ->set_width(50)
-                    ->set_help_text(sprintf( __( 'Please enter with one monetary decimal point (%s) without thousand separators and currency symbols.', 'woocommerce' ), wc_get_price_decimal_separator() ))
-                    ->set_conditional_logic([
-                        array_merge($comission_type_logic, ['value' => 'fixed_amount'])
-                    ]),
-            ])
+            ])->set_conditional_logic([
+                array_merge($comission_type_logic, ['value' => 'percentage'])
+            ]),
         ];
 
         self::list_only_partners();
@@ -65,5 +54,16 @@ class PartnersFieldGroup implements FieldGroup
     public static function apply_partners_filter($options){
         $options['role'] = 'partner';
         return $options;
+    }
+
+    protected static function user_association_field() {
+        return Field::make('association', 'psp_partner_user', __('Partner'))
+        ->set_types([
+            [
+                'type' => 'user',
+            ]
+        ])->set_min(1)
+        ->set_max(1)
+        ->set_width(50);
     }
 }
