@@ -17,7 +17,7 @@ class PartnersFieldGroup implements FieldGroup
                     'percentage' => __('Percentage', 'pagarme-split-payment'),
                     'fixed_amount' => __('Fixed Amount', 'pagarme-split-payment'),
                 ]),
-            self::user_association_field()
+            self::user_association_field('psp_fixed_partner', __('Partner'))
                 ->set_conditional_logic([
                     array_merge($comission_type_logic, ['value' => 'fixed_amount'])
                 ]),
@@ -27,9 +27,9 @@ class PartnersFieldGroup implements FieldGroup
                 ->set_conditional_logic([
                     array_merge($comission_type_logic, ['value' => 'fixed_amount'])
                 ]),
-            Field::make('complex', 'psp_partners', __('Partners payment split'))
+            Field::make('complex', 'psp_percentage_partners', __('Partners payment split'))
             ->add_fields([
-                self::user_association_field(),
+                self::user_association_field('psp_partner', __('Partner')),
                 Field::make('text', 'psp_percentage', __('Partner Percentage', 'pagarme-split-payment'))
                     ->set_width(50)
                     ->set_attribute('type', 'number')
@@ -57,8 +57,8 @@ class PartnersFieldGroup implements FieldGroup
         return $options;
     }
 
-    protected static function user_association_field() {
-        return Field::make('association', 'psp_partner_user', __('Partner'))
+    protected static function user_association_field($name, $label) {
+        return Field::make('association', $name, $label)
         ->set_types([
             [
                 'type' => 'user',
