@@ -35,7 +35,8 @@ class PartnersFieldGroup implements FieldGroup
                     ->set_attribute('type', 'number')
             ])->set_conditional_logic([
                 array_merge($comission_type_logic, ['value' => 'percentage'])
-            ]),
+            ])
+            ->set_layout('tabbed-horizontal'),
         ];
 
         self::list_only_partners();
