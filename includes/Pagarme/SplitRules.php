@@ -66,21 +66,29 @@ class SplitRules {
         $items = $order->get_items();
         $partners = [];
 
-        foreach ( $items as $item ) {
-            $productPartners = carbon_get_post_meta(
-                $item->get_product_id(), 
-                'psp_partners'
-            );
-
-            // Sum the total amount to be given to each partner on the order
-            foreach ($productPartners as $partner) {
-                $partner = new Partner($partner);
-
-                $partners[$partner->getID()]['value'] += $partner->calculateValue($item);
+        foreach ($items as $item) {
+            foreach ($this->getPartnersFromProduct($item->get_product_id()) as $partner) {
+                $userId = (int) $partner['psp_partner'][0]['id'];
+                $partner = new Partner($userId);
+                $partners[$userId]['value'] += $partner->calculateComission($item)->getComission();
             }
         }
 
         return $partners;
+    }
+
+    private function getPartnersFromProduct(int $productId): array {
+        $partners = [
+            'percentage' => carbon_get_post_meta($productId, 'psp_percentage_partners'),
+            'fixed_amount' => [[
+                'psp_partner' => carbon_get_post_meta($productId, 'psp_fixed_partner'), 
+                'psp_comission_value' => carbon_get_post_meta($productId, 'psp_comission_value')
+            ]]
+        ];
+
+        $comissionType = carbon_get_post_meta($productId, 'psp_comission_type');
+
+        return $partners[$comissionType];
     }
 
     private function log($order)
