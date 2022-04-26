@@ -19,29 +19,27 @@ class ProductCustomPostType extends CustomPostType
             true
         );
 
-        add_action('save_post_product', [$this, 'validatePartnersComission'], 10);
+        add_filter('carbon_fields_should_save_field_value', [$this, 'validateFixedPartnerComission'], 10, 3);
     }
 
-    public function validatePartnersComission(int $postID)
+    public function validateFixedPartnerComission(bool $save, $value, Field $field)
     {
-        $partners = $_POST['carbon_fields_compact_input']['_psp_partners'];
-        $product = wc_get_product($postID);
+        global $post;
+        $comissionType = $_POST['carbon_fields_compact_input']['_psp_comission_type'];
 
-        $totalPartnersComission = array_reduce($partners, function (float $total, array $partner) use ($product) {
-            $partner = new Partner([
-                'psp_comission_type' => $partner['_psp_comission_type'],
-                'psp_percentage' => $partner['_psp_percentage'] ?? 0,
-                'psp_fixed_amount' => $partner['_psp_fixed_amount'] ?? 0,
-            ]);
-
-            return $partner->calculateValue($product) + $total;
-        }, 0);
-
-        if (Helper::priceInCents($totalPartnersComission) > Helper::priceInCents((float) $product->get_price())) {
-            set_transient('psp_comission_error_' . $postID, __('Partners comissions has value greater than product price.', 'pagarme-split-payment'), YEAR_IN_SECONDS);
-            return;
+        if ($field->get_name() !== '_psp_comission_value' || 'fixed_amount' !== $comissionType || empty($value)) {
+            return $save;
         }
 
-        delete_transient('psp_comission_error_' . $postID);
+        $comission = (float) str_replace(wc_get_price_decimal_separator(), '.', $value);
+        $product = wc_get_product($post->ID);
+
+        if (Helper::priceInCents($comission) > Helper::priceInCents((float) $product->get_price())) {
+            set_transient('psp_comission_error_' . $post->ID, __('Partners comissions has value greater than product price.', 'pagarme-split-payment'), YEAR_IN_SECONDS);
+            return false;
+        }
+
+        delete_transient('psp_comission_error_' . $post->ID);
+        return $save;
     }
 }
