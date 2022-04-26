@@ -21,7 +21,7 @@ class PartnersFieldGroup implements FieldGroup
                 ->set_conditional_logic([
                     array_merge($comission_type_logic, ['value' => 'fixed_amount'])
                 ]),
-            Field::make('text', 'psp_fixed_amount', __('Partner Amount', 'pagarme-split-payment'))
+            Field::make('text', 'psp_comission_value', __('Partner Amount', 'pagarme-split-payment'))
                 ->set_width(50)
                 ->set_help_text(sprintf( __( 'Please enter with one monetary decimal point (%s) without thousand separators and currency symbols.', 'woocommerce' ), wc_get_price_decimal_separator() ))
                 ->set_conditional_logic([
@@ -30,7 +30,7 @@ class PartnersFieldGroup implements FieldGroup
             Field::make('complex', 'psp_percentage_partners', __('Partners payment split'))
             ->add_fields([
                 self::user_association_field('psp_partner', __('Partner')),
-                Field::make('text', 'psp_percentage', __('Partner Percentage', 'pagarme-split-payment'))
+                Field::make('text', 'psp_comission_value', __('Partner Percentage', 'pagarme-split-payment'))
                     ->set_width(50)
                     ->set_attribute('type', 'number')
             ])->set_conditional_logic([
