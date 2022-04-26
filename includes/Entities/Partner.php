@@ -3,62 +3,83 @@
 namespace PagarmeSplitPayment\Entities;
 
 use PagarmeSplitPayment\Helper;
-use WC_Data;
-use WC_Order_Item;
-use WC_Product;
+use WC_Order_Item_Product;
 
 class Partner
 {
-    public function __construct(array $partnerData)
+    protected $id;
+    protected $comission = 0;
+    protected $partnerPercentage = 0;
+    protected $partnerFixedComission = 0;
+
+    public function __construct(int $id)
     {
-        $this->partnerData = $partnerData;
+        $this->id = $id;
     }
 
-    public function calculateValue(WC_Data $item): float
+    public function calculateComission(WC_Order_Item_Product $item): self
     {
-        $value = [
-            'percentage' => $this->getPercentageAmount($item, $this->partnerData),
-            'fixed_amount' => $this->getFixedAmount($item, $this->partnerData),
-        ];
+        $comissionType = carbon_get_post_meta($item->get_product_id(), 'psp_comission_type');
 
-        $comissionType = $this->partnerData['psp_comission_type'];
+        $value = [
+            'percentage' => $this->calculatePercentageComission($item),
+            'fixed_amount' => $this->calculateFixedComission($item),
+        ];
 
         if (!isset($value[$comissionType])) {
             throw new \Exception(__('Invalid comission type.', 'pagarme-split-payment'));
         }
 
-        return $value[$comissionType];
+        $this->comission = $value[$comissionType];
+
+        return $this;
     }
 
-    public function getID()
+    public function getComission(): float
     {
-        return $this->partnerData['psp_partner_user'][0]['id'];
+        return $this->comission;
     }
 
-    protected function getPercentageAmount(WC_Data $item, array $partnerData): float
+    protected function calculatePercentageComission(WC_Order_Item_Product $item): float
     {
-        $percentage = (float) $partnerData['psp_percentage'];
-        $price = 0;
+        $percentage = $this->getPercentage($item);
 
-        if (is_a($item, WC_Order_Item::class)) {
-            $price = (float) $item->get_data()['total'];
-        } else if (is_a($item, WC_Product::class)) {
-            $price = (float) $item->get_data()['price'];
-        }
+        error_log($percentage);
+
+        $price = $item->get_data()['total'];
 
         return round($price * ($percentage / 100), 2);
     }
 
-    protected function getFixedAmount(WC_Data $item, array $partnerData): float
+    protected function calculateFixedComission(WC_Order_Item_Product $item): float
     {
-        $comission = (float) str_replace(wc_get_price_decimal_separator(), '.', $partnerData['psp_fixed_amount']);
+        $fixedComission = $this->getFixedComission($item);
 
-        if (is_a($item, WC_Order_Item::class)) {
-            $price = (float) $item->get_data()['total'];
+        $price = (float) (is_a($item, WC_Order_Item_Product::class) ? $item->get_data()['total'] : $item->get_data()['price']);
 
-            return Helper::priceInCents($comission) > Helper::priceInCents($price) ? $price : $comission;
+        return Helper::priceInCents($fixedComission) > Helper::priceInCents($price) ? $price : $fixedComission;
+    }
+
+    protected function getPercentage(WC_Order_Item_Product $item): float
+    {
+        $partners = carbon_get_post_meta($item->get_product_id(), 'psp_percentage_partners');
+        $id = $this->id;
+
+        $partner = array_filter($partners, function (array $partner) use ($id) {
+            return $partner['psp_partner'][0]['id'] == $id;
+        });
+
+        return (float) $partner[0]['psp_comission_value'];
+    }
+
+    protected function getFixedComission(WC_Order_Item_Product $item): float
+    {
+        $fixedComission = carbon_get_post_meta($item->get_product_id(), 'psp_comission_value');
+
+        if (empty($fixedComission)) {
+            return 0;
         }
 
-        return $comission;
+        return (float) str_replace(wc_get_price_decimal_separator(), '.', $fixedComission);
     }
 }
