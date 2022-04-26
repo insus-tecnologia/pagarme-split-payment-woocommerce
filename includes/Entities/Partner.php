@@ -44,8 +44,6 @@ class Partner
     {
         $percentage = $this->getPercentage($item);
 
-        error_log($percentage);
-
         $price = $item->get_data()['total'];
 
         return round($price * ($percentage / 100), 2);
