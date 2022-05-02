@@ -9,6 +9,7 @@ class SplitRules {
     public function split( $data, $order ) {
         $partners = $this->partnersAmountOverOrder($order);
         $mainRecipientData = carbon_get_theme_option('psp_partner');
+        $data['split_rules'] = [];
 
         if (
             empty($partners) ||
@@ -136,5 +137,6 @@ class SplitRules {
     public function addSplit()
     {
         add_filter( 'wc_pagarme_transaction_data', array($this, 'split'), 10, 2 );
+        add_filter( 'wc_pagarme_transaction_data_for_renewal', array($this, 'split'), 10, 2 );
     }
 }
