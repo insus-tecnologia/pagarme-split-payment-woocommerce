@@ -34,4 +34,4 @@ Note: Fixed amount commission will limit the recipients to only one partner.
 - Commission History
 
 ## Changelog
-Changelog can be found [here](https://github.com/insus-tecnologia/pagarme-split-payment-woocommerce/CHANGELOG.md)
+Changelog can be found [here](https://github.com/insus-tecnologia/pagarme-split-payment-woocommerce/blob/master/CHANGELOG.md)
