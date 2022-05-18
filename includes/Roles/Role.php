@@ -82,17 +82,13 @@ class Role {
         );
     }
 
-    public function prevent_admin_access()
+    public function prevent_admin_access($prevent_access)
     {
-        if( !is_user_logged_in() ) {
-            return true;
-        }
-
         $user = wp_get_current_user();
-        if (in_array($this->role, $user->roles) && !$this->allow_admin) {
-            return true;
+        if (in_array($this->role, $user->roles) && $this->allow_admin) {
+            return false;
         }
 
-        return false;
+        return $prevent_access;
     }
 }

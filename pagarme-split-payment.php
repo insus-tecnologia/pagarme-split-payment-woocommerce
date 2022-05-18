@@ -2,9 +2,9 @@
 /**
  * Plugin Name: Pagar.me Split Payment for WooCommerce
  * Description: Allow you to define partners to split payment with using Pagar.me gateway.
- * Version: 1.0.1
- * Author: Raphael Batagini
- * Author URI: https://www.linkedin.com/in/raphael-batagini/
+ * Version: 1.2.1
+ * Author: Insus Tecnologia
+ * Author URI: https://insus.com.br
  * Text Domain: pagarme-split-payment
  * Domain Path: /i18n/languages/
  *
