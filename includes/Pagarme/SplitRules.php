@@ -67,6 +67,10 @@ class SplitRules {
         $items = $order->get_items();
         $partners = [];
 
+        if (!$items) {
+            return $partners;
+        }
+
         foreach ($items as $item) {
             foreach ($this->getPartnersFromProduct($item->get_product_id()) as $partner) {
                 $userId = (int) $partner['psp_partner'][0]['id'];
@@ -102,26 +106,28 @@ class SplitRules {
 
         $partners_ids = [];
 
-        foreach ( $items as $item ) {
-            $productId = $item->get_product_id();
-            $productPartners = carbon_get_post_meta(
-                $productId,
-                'psp_partners'
-            );
+        if ($items) {
+            foreach ( $items as $item ) {
+                $productId = $item->get_product_id();
+                $productPartners = carbon_get_post_meta(
+                    $productId,
+                    'psp_partners'
+                );
 
-            // Get data for all partners related to this order
-            foreach ($productPartners as $partner) {
-                $partners[] = [
-                    'user_id' => $partner['psp_partner_user'][0]['id'],
-                    'product_id' => $productId,
-                    'quantity' => $item->get_quantity(),
-                    'amount' => $item->get_data()['total'] * ($partner['psp_percentage']/100),
-                    'percentage' => $partner['psp_percentage'],
-                ];
+                // Get data for all partners related to this order
+                foreach ($productPartners as $partner) {
+                    $partners[] = [
+                        'user_id' => $partner['psp_partner_user'][0]['id'],
+                        'product_id' => $productId,
+                        'quantity' => $item->get_quantity(),
+                        'amount' => $item->get_data()['total'] * ($partner['psp_percentage']/100),
+                        'percentage' => $partner['psp_percentage'],
+                    ];
 
-                // Register the different partners at this order
-                if (!in_array($partner['psp_partner_user'][0]['id'], $partners_ids)) {
-                    $partners_ids[] = $partner['psp_partner_user'][0]['id'];
+                    // Register the different partners at this order
+                    if (!in_array($partner['psp_partner_user'][0]['id'], $partners_ids)) {
+                        $partners_ids[] = $partner['psp_partner_user'][0]['id'];
+                    }
                 }
             }
         }
