@@ -13,7 +13,7 @@
                     <td><?= $user->display_name ?></td>
                     <td><?= get_the_title($log['product_id']) . "(x{$log['quantity']})" ?></td>
                     <td><?= wc_price($log['amount']) ?></td>
-                    <td><?= $log['percentage'] ?>%</td>
+                    <td><?= $log['percentage'] ? $log['percentage'] . '%' : '-' ?></td>
                 </tr>
             <?php endforeach ?>
         </tbody>

@@ -102,25 +102,23 @@ class SplitRules {
         delete_post_meta($order->get_ID(), 'psp_order_partner');
 
         $items = $order->get_items();
-        $partners = [];
-
         $partners_ids = [];
-
-        if ($items) {
+        
+        $partners = [];
+        $orderPartners = $this->partnersAmountOverOrder($order);
+  
+        if ($items && is_array($items)) {
             foreach ( $items as $item ) {
                 $productId = $item->get_product_id();
-                $productPartners = carbon_get_post_meta(
-                    $productId,
-                    'psp_partners'
-                );
+                $productPartners = carbon_get_post_meta($productId, 'psp_percentage_partners');
 
                 // Get data for all partners related to this order
                 foreach ($productPartners as $partner) {
                     $partners[] = [
-                        'user_id' => $partner['psp_partner_user'][0]['id'],
+                        'user_id' => $partner['psp_partner'][0]['id'],
                         'product_id' => $productId,
                         'quantity' => $item->get_quantity(),
-                        'amount' => $item->get_data()['total'] * ($partner['psp_percentage']/100),
+                        'amount' => $orderPartners[$partner['psp_partner'][0]['id']]['value'],
                         'percentage' => $partner['psp_percentage'],
                     ];
 
