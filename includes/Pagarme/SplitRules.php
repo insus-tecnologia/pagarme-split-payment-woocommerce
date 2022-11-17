@@ -4,8 +4,16 @@ namespace PagarmeSplitPayment\Pagarme;
 
 use PagarmeSplitPayment\Entities\Partner;
 use PagarmeSplitPayment\Helper;
+use PagarmeSplitPayment\Utilities\FileLogger;
 
 class SplitRules {
+    private $logger;
+
+    public function __construct()
+    {
+        $this->logger = new FileLogger('split_rules');    
+    }
+
     public function split( $data, $order ) {
         $partners = $this->partnersAmountOverOrder($order);
         $mainRecipientData = carbon_get_theme_option('psp_partner');
@@ -50,6 +58,7 @@ class SplitRules {
             'charge_processing_fee' => true,
         ];
 
+        $this->logger->info(['amount' => $data['amount'], 'split' => $data['split_rules']]);
         $this->log($order);
 
         return $data;
@@ -102,25 +111,23 @@ class SplitRules {
         delete_post_meta($order->get_ID(), 'psp_order_partner');
 
         $items = $order->get_items();
-        $partners = [];
-
         $partners_ids = [];
-
-        if ($items) {
+        
+        $partners = [];
+        $orderPartners = $this->partnersAmountOverOrder($order);
+  
+        if ($items && is_array($items)) {
             foreach ( $items as $item ) {
                 $productId = $item->get_product_id();
-                $productPartners = carbon_get_post_meta(
-                    $productId,
-                    'psp_partners'
-                );
+                $productPartners = carbon_get_post_meta($productId, 'psp_percentage_partners');
 
                 // Get data for all partners related to this order
                 foreach ($productPartners as $partner) {
                     $partners[] = [
-                        'user_id' => $partner['psp_partner_user'][0]['id'],
+                        'user_id' => $partner['psp_partner'][0]['id'],
                         'product_id' => $productId,
                         'quantity' => $item->get_quantity(),
-                        'amount' => $item->get_data()['total'] * ($partner['psp_percentage']/100),
+                        'amount' => $orderPartners[$partner['psp_partner'][0]['id']]['value'],
                         'percentage' => $partner['psp_percentage'],
                     ];
 
