@@ -4,8 +4,16 @@ namespace PagarmeSplitPayment\Pagarme;
 
 use PagarmeSplitPayment\Entities\Partner;
 use PagarmeSplitPayment\Helper;
+use PagarmeSplitPayment\Utilities\FileLogger;
 
 class SplitRules {
+    private $logger;
+
+    public function __construct()
+    {
+        $this->logger = new FileLogger('split_rules');    
+    }
+
     public function split( $data, $order ) {
         $partners = $this->partnersAmountOverOrder($order);
         $mainRecipientData = carbon_get_theme_option('psp_partner');
@@ -50,6 +58,7 @@ class SplitRules {
             'charge_processing_fee' => true,
         ];
 
+        $this->logger->info(['amount' => $data['amount'], 'split' => $data['split_rules']]);
         $this->log($order);
 
         return $data;
