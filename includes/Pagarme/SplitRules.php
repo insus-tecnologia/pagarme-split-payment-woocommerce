@@ -84,7 +84,14 @@ class SplitRules {
             foreach ($this->getPartnersFromProduct($item->get_product_id()) as $partner) {
                 $userId = (int) $partner['psp_partner'][0]['id'];
                 $partner = new Partner($userId);
-                $partners[$userId]['value'] += $partner->calculateComission($item)->getComission();
+
+                $orderItemPartnerComission = $partner->calculateComission($item)->getComission();
+
+                if (empty($partners[$userId])) {
+                    $partners[$userId] = ['value' => 0];
+                }
+
+                $partners[$userId]['value'] += $orderItemPartnerComission;
             }
         }
 
@@ -128,12 +135,12 @@ class SplitRules {
                         'product_id' => $productId,
                         'quantity' => $item->get_quantity(),
                         'amount' => $orderPartners[$partner['psp_partner'][0]['id']]['value'],
-                        'percentage' => $partner['psp_percentage'],
+                        'percentage' => !empty($partner['psp_comission_value']) ? $partner['psp_comission_value'] : null,
                     ];
 
                     // Register the different partners at this order
-                    if (!in_array($partner['psp_partner_user'][0]['id'], $partners_ids)) {
-                        $partners_ids[] = $partner['psp_partner_user'][0]['id'];
+                    if (!in_array($partner['psp_partner'][0]['id'], $partners_ids)) {
+                        $partners_ids[] = $partner['psp_partner'][0]['id'];
                     }
                 }
             }
