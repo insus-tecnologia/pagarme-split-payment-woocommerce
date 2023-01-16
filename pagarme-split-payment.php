@@ -31,7 +31,9 @@ class PagarmeSplitWooCommerce {
         // Admin
         (new \PagarmeSplitPayment\Admin\Actions())
             ->createRecipients()
-            ->createAdminNotices();
+            ->createAdminNotices()
+            ->logExternalRequests();
+        
         (new \PagarmeSplitPayment\Admin\PluginOptions())->create();
 
         // Roles
