@@ -14,6 +14,8 @@
 ##### Main Recipient
 With the plugin installed, you should go to WordPress Dashboard > "Pagar.me Split Payment" and fill the fields with your bank information, document and your name. This will create a [recipient](https://docs.pagar.me/v4-Eng/docs/criando-um-recebedor-1) at Pagar.me and this recipient will be used as the main.
 
+This recipient will receive all the remaining amount after the split rules have been applied, including values not designated to partners/recipients and other fees (e.g. installment fees). Also, it will be charged by transaction fees in the payment gateway.
+
 ##### Recipients
 Every recipient must have an account in your WordPress.
 To create a user you should go to WordPres > Users > "Add New".
