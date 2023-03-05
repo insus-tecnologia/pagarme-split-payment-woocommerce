@@ -36,7 +36,8 @@ class SplitRules
                 'recipient_id' => $partnerData['psp_recipient_id'],
                 'amount' => Helper::priceInCents($partner['value']),
                 'liable' => true,
-                'charge_processing_fee' => true,
+                'charge_processing_fee' => false,
+                'charge_remainder' => false,
             ];
         }
 
@@ -45,11 +46,17 @@ class SplitRules
             return $data;
         }
 
+        $orderTotal = Helper::priceInCents($order->get_total());
+
+        // installment fees and others
+        $fees = $data['amount'] - $orderTotal;
+
         $data['split_rules'][] = [
             'recipient_id' => $mainRecipientData[0]['psp_recipient_id'],
-            'amount' => Helper::priceInCents($order->get_total()) - $partnersAmount,
+            'amount' => $orderTotal + $fees - $partnersAmount,
             'liable' => true,
             'charge_processing_fee' => true,
+            'charge_remainder' => true,
         ];
 
         $this->log($order);
